@@ -20,6 +20,47 @@ mvn clean install
 java -jar app/target/app-1.0-SNAPSHOT-exec.jar
 ```
 
+> Note:
+如果maven没有配置jdk9，则可能报错`无效的标记: --module-path`。
+解决方法为在本地Maven安装目录conf/toolchains.xml文件中加入jdk9的toolchain节点，如下：
+```xml
+<toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>9</version>
+      <vendor>oracle</vendor>
+    </provides>
+    <configuration>
+      <!-- Change path to JDK9 -->
+      <jdkHome>D:\Programs\Java\jdk_9</jdkHome>
+    </configuration>
+</toolchain>
+```
+并在项目父pom.xml中引入该toolchain，如下：
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-toolchains-plugin</artifactId>
+    <version>1.1</version>
+    <configuration>
+        <toolchains>
+            <jdk>
+                <version>9</version>
+                <vendor>oracle</vendor>
+            </jdk>
+        </toolchains>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>toolchain</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+[以上参考](https://zhuanlan.zhihu.com/p/28010505)
+
 This will spin up a spring boot application with a two endpoints, `/users/{id}` that you can fire a GET request at
 to get some dummy output and `/admin/metrics` which will give you a dummy, basic metrics endpoint.
 
